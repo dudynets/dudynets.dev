@@ -14,10 +14,9 @@ jobs:
       - run: bun install
       - run: bun run build
 
-      - uses: airvzxf/ftp-deployment-action@latest
+      - uses: SamKirkland/FTP-Deploy-Action@latest
         with:
           server: ${{ secrets.FTP_SERVER }}
-          user: ${{ secrets.FTP_USER }}
+          username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: './dist'
-          delete: true
+          local-dir: './dist'
