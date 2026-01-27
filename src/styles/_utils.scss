@@ -14,15 +14,23 @@
   }
 }
 
-@mixin icon($name, $size: 16px, $color: var(--fg), $size-modifier: 1.2) {
+@mixin icon(
+  $name,
+  $size: 16px,
+  $color: var(--fg),
+  $size-modifier: 1.2,
+  $x-offset: 0,
+  $y-offset: 0
+) {
   display: inline-block;
-  width: $size;
-  height: $size;
+  width: calc($size * $size-modifier);
+  height: calc($size * $size-modifier);
   background-color: $color;
   mask-image: url('/assets/icons/#{$name}.svg');
-  mask-size: $size-modifier * 100%;
+  mask-size: contain;
   mask-repeat: no-repeat;
   mask-position: center;
+  translate: $x-offset $y-offset;
 }
 
 @mixin hover($force-hover: false) {

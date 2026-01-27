@@ -27,10 +27,12 @@ footer {
   }
 
   .heart-icon {
-    @include utils.icon('heart-filled', var(--text-sm), var(--fg-muted));
-    position: relative;
-    bottom: -1px;
-    margin-inline: 2px;
+    @include utils.icon(
+      'heart-filled',
+      var(--text-sm),
+      var(--fg-muted),
+      $y-offset: 3px
+    );
   }
 
   .footer__links {

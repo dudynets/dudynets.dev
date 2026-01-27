@@ -14,7 +14,7 @@
     color: var(--fg-muted);
 
     p {
-      margin-right: calc(var(--text-base) + 14px);
+      margin-right: calc(var(--text-base) * 1.2 + 14px);
     }
 
     .link__arrow {
@@ -42,7 +42,7 @@
     position: absolute;
     top: 50%;
     right: 0;
-    translate: 0 -50%;
+    translate: 0 calc(-50% + 1px);
     transition: opacity var(--transition-default);
   }
 }
