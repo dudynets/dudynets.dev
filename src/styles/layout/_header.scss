@@ -10,6 +10,17 @@ header {
   margin-bottom: -56px;
   pointer-events: none;
 
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -100vh;
+    height: 100vh;
+    background: var(--bg);
+    z-index: 1;
+  }
+
   @include utils.mobile {
     padding-bottom: 40px;
     margin-bottom: -40px;
