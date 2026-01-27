@@ -1,0 +1,15 @@
+.websites {
+  &__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+
+    li {
+      border-bottom: 1px solid var(--border);
+
+      &:first-child {
+        border-top: 1px solid var(--border);
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+@use '../_utils';
+@use 'sass:math';
+
+footer {
+  width: 100%;
+  margin-top: auto;
+
+  .footer__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+
+    @include utils.mobile {
+      padding: 20px;
+      gap: 20px;
+    }
+  }
+
+  p {
+    font-size: var(--text-sm);
+    color: var(--fg-muted);
+  }
+
+  .heart-icon {
+    @include utils.icon('heart-filled', var(--text-sm), var(--fg-muted));
+    position: relative;
+    bottom: -1px;
+    margin-inline: 2px;
+  }
+
+  .footer__links {
+    $icon-color: var(--fg-muted);
+    $icon-hover-color: var(--fg);
+    $icon-size: var(--text-lg);
+    $gap: 14px;
+
+    display: flex;
+    gap: $gap;
+
+    a {
+      $touch-target-offset: math.div($gap, 2);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: $touch-target-offset;
+      margin: -$touch-target-offset;
+      transition: opacity var(--transition-default);
+
+      &:focus-visible {
+        outline-offset: 0;
+        border-radius: calc($touch-target-offset + var(--radius-sm));
+      }
+
+      i {
+        transition: background-color var(--transition-default);
+
+        &.linkedin-icon {
+          @include utils.icon('social/linkedin', $icon-size, $icon-color, 1);
+        }
+      }
+
+      @include utils.hover {
+        i {
+          background-color: var(--fg);
+        }
+      }
+    }
+  }
+}

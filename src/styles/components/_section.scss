@@ -1,0 +1,13 @@
+section {
+  > h2 {
+    margin-bottom: 16px;
+  }
+
+  > p {
+    margin-bottom: 20px;
+  }
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

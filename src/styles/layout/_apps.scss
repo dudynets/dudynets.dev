@@ -1,0 +1,13 @@
+@use '../_utils';
+
+.apps {
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+
+    @include utils.mobile {
+      grid-template-columns: 1fr;
+    }
+  }
+}

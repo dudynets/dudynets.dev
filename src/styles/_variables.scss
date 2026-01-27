@@ -1,0 +1,39 @@
+:root {
+  /* Colors */
+  --bg: #0a0a0a;
+  --surface: #111;
+  --surface-hover: #161616;
+  --fg: #ededed;
+  --fg-muted: #9e9e9e;
+  --fg-link: #c4c4c4;
+  --border: #1a1a1a;
+  --border-hover: #252525;
+  --underline: #3a3a3a;
+  --underline-hover: #c4c4c4;
+
+  @supports (color: oklch(0 0 0)) {
+    --bg: oklch(0.145 0 0);
+    --surface: oklch(0.178 0 0);
+    --surface-hover: oklch(0.2 0 0);
+    --fg: oklch(0.946 0 0);
+    --fg-muted: oklch(0.699 0 0);
+    --fg-link: oklch(0.82 0 0);
+    --border: oklch(0.218 0 0);
+    --border-hover: oklch(0.264 0 0);
+    --underline: oklch(0.348 0 0);
+    --underline-hover: oklch(0.82 0 0);
+  }
+
+  /* Spacing & Layout */
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+
+  /* Typography */
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+
+  /* Transitions */
+  --transition-default: 0.15s ease;
+}

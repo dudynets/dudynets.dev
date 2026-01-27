@@ -1,0 +1,23 @@
+{
+  "name": "dudynets.dev",
+  "version": "0.0.0",
+  "devDependencies": {
+    "autoprefixer": "^10.4.23",
+    "prettier": "^3.8.1",
+    "sass-embedded": "^1.97.3",
+    "sharp": "^0.34.5",
+    "typescript": "~5.9.3",
+    "vite": "npm:rolldown-vite@7.2.5",
+    "vite-plugin-html-minifier": "^1.0.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "private": true,
+  "scripts": {
+    "start": "vite",
+    "build": "tsc && vite build",
+    "format": "prettier --write ."
+  },
+  "type": "module"
+}

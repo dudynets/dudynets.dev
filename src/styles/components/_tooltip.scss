@@ -1,0 +1,74 @@
+@use '../_utils';
+
+[data-tooltip] {
+  anchor-scope: --tooltip;
+  anchor-name: --tooltip;
+
+  &:is(span) {
+    cursor: help;
+    text-decoration: dashed underline;
+    text-decoration-color: var(--underline);
+    transition: text-decoration-color var(--transition-default);
+  }
+
+  @mixin _tooltip-visible {
+    text-decoration-color: var(--underline-hover);
+
+    &::after {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  @include utils.hover($force-hover: true) {
+    @include _tooltip-visible;
+  }
+
+  &[data-tooltip-visible='true'] {
+    @include _tooltip-visible;
+  }
+
+  &::after {
+    --tooltip-offset: 8px;
+
+    margin-inline: 20px;
+
+    content: attr(data-tooltip);
+    position: absolute;
+    max-width: 200px;
+    width: max-content;
+
+    position-anchor: --tooltip;
+    position-area: bottom;
+    margin-top: var(--tooltip-offset);
+    position-try: flip-block;
+
+    background-color: var(--surface-hover);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    padding: 6px 10px;
+
+    color: var(--fg);
+    font-size: var(--text-sm);
+
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+
+    transition:
+      opacity var(--transition-default),
+      visibility var(--transition-default);
+  }
+
+  @supports not (position-area: bottom) {
+    position: relative;
+
+    &::after {
+      top: 100%;
+      left: 50%;
+      translate: -50% var(--tooltip-offset);
+      position-anchor: unset;
+    }
+  }
+}

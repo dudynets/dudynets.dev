@@ -1,0 +1,79 @@
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin icon($name, $size: 16px, $color: var(--fg), $size-modifier: 1.2) {
+  display: inline-block;
+  width: $size;
+  height: $size;
+  background-color: $color;
+  mask-image: url('/assets/icons/#{$name}.svg');
+  mask-size: $size-modifier * 100%;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+@mixin hover($force-hover: false) {
+  &:focus-visible,
+  &:active {
+    @content;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+
+  @if $force-hover {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+@mixin mobile {
+  @media (max-width: 520px) {
+    @content;
+  }
+}
+
+@mixin app-icon($size: 40px) {
+  width: $size;
+  height: $size;
+  border-radius: calc($size / 4);
+  overflow: hidden;
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  outline-offset: -1px;
+
+  @supports (-webkit-mask-composite: xor) or (mask-composite: exclude) {
+    position: relative;
+    outline: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.5) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.5) 100%
+      );
+      mask:
+        linear-gradient(white 0 0) content-box,
+        linear-gradient(white 0 0);
+      mask-composite: exclude;
+    }
+  }
+}
