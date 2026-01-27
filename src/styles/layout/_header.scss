@@ -8,6 +8,7 @@ header {
   background: linear-gradient(to bottom, var(--bg), transparent);
   padding-bottom: 56px;
   margin-bottom: -56px;
+  pointer-events: none;
 
   @include utils.mobile {
     padding-bottom: 40px;
@@ -23,6 +24,7 @@ header {
     width: 100%;
     margin: 0 auto;
     padding: 24px;
+    pointer-events: auto;
 
     @include utils.mobile {
       padding: 20px;
