@@ -1,5 +1,5 @@
 import {copyToClipboard} from './utils/copy';
-import {isMacintosh} from './utils/is-macintosh';
+import {macintosh} from './utils/platform-matchers';
 import {isTouchDevice} from './utils/is-touch-device';
 import {onDOMLoaded} from './utils/on-dom-loaded';
 import {setAbortableTimeout} from './utils/set-abortable-timeout';
@@ -7,7 +7,7 @@ import {setAbortableTimeout} from './utils/set-abortable-timeout';
 const DEFAULT_MODIFIER = 'Alt';
 const MACINTOSH_MODIFIER = '⌥';
 
-const TOOLTIP_TEXT = `${isMacintosh() ? MACINTOSH_MODIFIER : DEFAULT_MODIFIER} + click to copy`;
+const TOOLTIP_TEXT = `${macintosh() ? MACINTOSH_MODIFIER : DEFAULT_MODIFIER} + click to copy`;
 const COPIED_TEXT = 'Copied!';
 const FAILED_TEXT = 'Failed to copy';
 
