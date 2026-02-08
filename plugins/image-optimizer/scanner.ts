@@ -1,10 +1,12 @@
 import type {ImageParams, ImageReference} from './types';
 
-export const IMG_TAG_REGEX = /<img\s+[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/gi;
+export const IMG_TAG_REGEX = /<img\s+([^>]*)>/gi;
+const SRC_FROM_ATTRS_REGEX = /src\s*=\s*["']([^"']+)["']/i;
 export const IMAGE_ATTR_REGEX =
   /((?:src|href|content)\s*=\s*["'])([^"']+\.(?:png|jpg|jpeg|gif|webp)(?:\?[^"']*)?)(['"])/gi;
 
 export const OPTIMIZE_REGEX = /[?&]optimize=true/i;
+export const SHARED_REGEX = /[?&]shared=true/i;
 export const PARAMS_REGEX = /[?&](?:w|width)=(\d+)|[?&](?:h|height)=(\d+)/gi;
 
 export function parseImageParams(src: string): ImageParams {
@@ -19,6 +21,7 @@ export function parseImageParams(src: string): ImageParams {
   }
 
   params.optimize = OPTIMIZE_REGEX.test(src);
+  params.shared = SHARED_REGEX.test(src);
 
   return params;
 }
@@ -70,9 +73,11 @@ export function scanHtmlForImages(
 
   let match: RegExpExecArray | null;
   while ((match = IMG_TAG_REGEX.exec(html)) !== null) {
-    const originalSrc = match[1];
+    const attrString = match[1];
+    const srcMatch = SRC_FROM_ATTRS_REGEX.exec(attrString);
+    const originalSrc = srcMatch ? srcMatch[1] : '';
 
-    if (isExternalUrl(originalSrc)) continue;
+    if (!originalSrc || isExternalUrl(originalSrc)) continue;
     if (!isProcessableImage(originalSrc, extensions)) continue;
     if (!hasOptimizeFlag(originalSrc)) continue;
 
@@ -118,29 +123,67 @@ export function scanHtmlForImages(
   return references;
 }
 
-export function getAllMatchingSrcs(
-  html: string,
-  variantKey: string,
-  extensions: string[],
-): string[] {
-  const srcs: string[] = [];
+/**
+ * Consolidate shared references: group by cleanPath, keep only the largest
+ * dimensions, and return a mapping from each original variant key to the
+ * shared (largest) variant key.
+ */
+export function consolidateSharedReferences(
+  references: Map<string, ImageReference>,
+): Map<string, string> {
+  const sharedKeyMap = new Map<string, string>();
 
-  IMG_TAG_REGEX.lastIndex = 0;
+  // Group shared references by base image path
+  const sharedGroups = new Map<string, ImageReference[]>();
 
-  let match: RegExpExecArray | null;
-  while ((match = IMG_TAG_REGEX.exec(html)) !== null) {
-    const originalSrc = match[1];
-    const cleanPath = getCleanPath(originalSrc);
+  for (const [, ref] of references) {
+    if (!ref.params.shared) continue;
 
-    if (!isProcessableImage(cleanPath, extensions)) continue;
+    const group = sharedGroups.get(ref.cleanPath) || [];
+    group.push(ref);
+    sharedGroups.set(ref.cleanPath, group);
+  }
 
-    const params = parseImageParams(originalSrc);
-    const key = generateVariantKey(cleanPath, params);
+  for (const [cleanPath, group] of sharedGroups) {
+    // Find the largest dimensions across all usages
+    let maxWidth = 0;
+    let maxHeight = 0;
 
-    if (key === variantKey && !srcs.includes(originalSrc)) {
-      srcs.push(originalSrc);
+    for (const ref of group) {
+      if (ref.params.width && ref.params.width > maxWidth)
+        maxWidth = ref.params.width;
+      if (ref.params.height && ref.params.height > maxHeight)
+        maxHeight = ref.params.height;
+    }
+
+    const sharedParams: ImageParams = {
+      width: maxWidth || undefined,
+      height: maxHeight || undefined,
+      optimize: true,
+      shared: true,
+    };
+    const sharedKey = generateVariantKey(cleanPath, sharedParams);
+
+    // Ensure the shared (largest) reference exists in the map
+    if (!references.has(sharedKey)) {
+      references.set(sharedKey, {
+        originalSrc: group[0].originalSrc,
+        cleanPath,
+        params: sharedParams,
+        variantKey: sharedKey,
+        isImgTag: group.some((r) => r.isImgTag),
+      });
+    }
+
+    // Map every group member to the shared key and remove smaller variants
+    for (const ref of group) {
+      sharedKeyMap.set(ref.variantKey, sharedKey);
+
+      if (ref.variantKey !== sharedKey) {
+        references.delete(ref.variantKey);
+      }
     }
   }
 
-  return srcs;
+  return sharedKeyMap;
 }

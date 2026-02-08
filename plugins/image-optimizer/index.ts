@@ -1,7 +1,7 @@
 import type {Plugin, ResolvedConfig} from 'vite';
 import path from 'node:path';
 import type {ImageOptimizerOptions, ResolvedOptions} from './types';
-import {scanHtmlForImages} from './scanner';
+import {scanHtmlForImages, consolidateSharedReferences} from './scanner';
 import {processImages} from './processor';
 import {transformHtml} from './transformer';
 
@@ -85,6 +85,13 @@ export function imageOptimizer(
 
       log(`Found ${references.size} unique image variants to process`);
 
+      const sharedKeyMap = consolidateSharedReferences(references);
+      if (sharedKeyMap.size > 0) {
+        log(
+          `Consolidated ${sharedKeyMap.size} shared references → ${references.size} variants to process`,
+        );
+      }
+
       const outputRoot = config.build.outDir
         ? path.isAbsolute(config.build.outDir)
           ? config.build.outDir
@@ -100,7 +107,12 @@ export function imageOptimizer(
       );
       log(`Successfully processed ${processedImages.size} image variants`);
 
-      const transformedHtml = transformHtml(html, processedImages, options);
+      const transformedHtml = transformHtml(
+        html,
+        processedImages,
+        options,
+        sharedKeyMap,
+      );
       log('HTML transformation complete');
 
       return transformedHtml;

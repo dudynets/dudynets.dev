@@ -2,6 +2,8 @@ export interface ImageParams {
   width?: number;
   height?: number;
   optimize?: boolean;
+  /** When true, all instances of the same base image share the largest variant */
+  shared?: boolean;
 }
 
 export interface ImageReference {

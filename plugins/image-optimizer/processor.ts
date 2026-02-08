@@ -70,12 +70,7 @@ export async function processImage(
   const {cleanPath, params} = reference;
   const originalExt = path.extname(cleanPath);
 
-  let sourcePath: string;
-  if (cleanPath.startsWith('/')) {
-    sourcePath = path.join(projectRoot, options.publicDir, cleanPath);
-  } else {
-    sourcePath = path.join(projectRoot, options.publicDir, cleanPath);
-  }
+  const sourcePath = path.join(projectRoot, options.publicDir, cleanPath);
 
   try {
     await fs.access(sourcePath);

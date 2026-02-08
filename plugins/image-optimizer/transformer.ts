@@ -11,7 +11,7 @@ import {
 
 function parseAttributes(attrString: string): Map<string, string> {
   const attrs = new Map<string, string>();
-  const attrRegex = /(\w+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'))?/g;
+  const attrRegex = /([\w-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'))?/g;
 
   let match: RegExpExecArray | null;
   while ((match = attrRegex.exec(attrString)) !== null) {
@@ -51,6 +51,7 @@ function normalizePath(outputPath: string): string {
 function generatePictureElement(
   variants: GeneratedVariant[],
   attrs: Map<string, string>,
+  isShared: boolean = false,
 ): string {
   const lines: string[] = ['<picture>'];
   const actualWidth = variants[0]?.width;
@@ -59,7 +60,11 @@ function generatePictureElement(
     if (variant.format === 'original') continue;
 
     const srcPath = normalizePath(variant.outputPath);
-    const srcsetValue = actualWidth ? `${srcPath} ${actualWidth}w` : srcPath;
+
+    // Skip width descriptors for shared images — the file dimensions differ
+    // from the display size, so width descriptors would confuse the browser.
+    const srcsetValue =
+      !isShared && actualWidth ? `${srcPath} ${actualWidth}w` : srcPath;
 
     lines.push(`  <source srcset="${srcsetValue}" type="${variant.mimeType}">`);
   }
@@ -73,11 +78,16 @@ function generatePictureElement(
   const imgAttrs = new Map(attrs);
   imgAttrs.set('src', fallbackPath);
 
-  if (!attrs.has('width') && actualWidth)
-    imgAttrs.set('width', String(actualWidth));
+  // For non-shared images, set dimensions from variants if not already specified.
+  // For shared images, the tag's own width/height (or the URL params) are the
+  // correct display size — don't override with the (larger) variant dimensions.
+  if (!isShared) {
+    if (!attrs.has('width') && actualWidth)
+      imgAttrs.set('width', String(actualWidth));
 
-  if (!attrs.has('height') && variants[0]?.height)
-    imgAttrs.set('height', String(variants[0].height));
+    if (!attrs.has('height') && variants[0]?.height)
+      imgAttrs.set('height', String(variants[0].height));
+  }
 
   const imgAttrString = serializeAttributes(imgAttrs);
 
@@ -91,6 +101,7 @@ export function transformHtml(
   html: string,
   processedImages: Map<string, ProcessedImage>,
   options: ResolvedOptions,
+  sharedKeyMap: Map<string, string> = new Map(),
 ): string {
   IMG_TAG_REGEX.lastIndex = 0;
 
@@ -107,19 +118,27 @@ export function transformHtml(
     const params = parseImageParams(src);
     const variantKey = generateVariantKey(cleanPath, params);
 
-    const processed = processedImages.get(variantKey);
+    // Look up directly, then fall back via sharedKeyMap
+    let processed = processedImages.get(variantKey);
+    const sharedKey = sharedKeyMap.get(variantKey);
+    const isShared = !!sharedKey && sharedKey !== variantKey;
+
+    if (!processed && sharedKey) {
+      processed = processedImages.get(sharedKey);
+    }
     if (!processed) return fullMatch;
 
-    const hasModernFormats = processed.variants.some(
-      (v) => v.format === 'avif' || v.format === 'webp',
-    );
+    // For shared images without explicit width/height on the tag, use the
+    // requested dimensions from the URL params so the browser renders at the
+    // correct display size (not the larger shared file size).
+    if (isShared) {
+      if (!attrs.has('width') && params.width)
+        attrs.set('width', String(params.width));
+      if (!attrs.has('height') && params.height)
+        attrs.set('height', String(params.height));
+    }
 
-    if (hasModernFormats)
-      return generatePictureElement(processed.variants, attrs);
-
-    const bestPath = normalizePath(processed.bestVariant.outputPath);
-    attrs.set('src', bestPath);
-    return `<img ${serializeAttributes(attrs)}>`;
+    return generatePictureElement(processed.variants, attrs, isShared);
   });
 
   IMAGE_ATTR_REGEX.lastIndex = 0;
@@ -127,7 +146,8 @@ export function transformHtml(
   result = result.replace(
     IMAGE_ATTR_REGEX,
     (fullMatch, prefix, url, suffix) => {
-      if (/-\d+w/.test(url) || /-o\./.test(url)) return fullMatch;
+      // Skip already-optimized files from the first pass
+      if (/--optimized/.test(url)) return fullMatch;
 
       if (url.startsWith('http') || url.startsWith('//')) return fullMatch;
       if (!isProcessableImage(url, options.extensions)) return fullMatch;
@@ -137,7 +157,12 @@ export function transformHtml(
       const params = parseImageParams(url);
       const variantKey = generateVariantKey(cleanPath, params);
 
-      const processed = processedImages.get(variantKey);
+      // Look up directly, then fall back via sharedKeyMap
+      let processed = processedImages.get(variantKey);
+      if (!processed) {
+        const sharedKey = sharedKeyMap.get(variantKey);
+        if (sharedKey) processed = processedImages.get(sharedKey);
+      }
       if (!processed) return fullMatch;
 
       const bestPath = normalizePath(processed.bestVariant.outputPath);
