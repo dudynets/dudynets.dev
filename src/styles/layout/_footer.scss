@@ -61,6 +61,10 @@ footer {
         border-radius: calc($touch-target-offset + var(--radius-sm));
       }
 
+      &[data-tooltip]::after {
+        margin-top: calc(var(--tooltip-offset) - $touch-target-offset);
+      }
+
       i {
         transition: background-color var(--transition-default);
 
