@@ -35,11 +35,15 @@ function init() {
   input.id = INPUT_ID;
   input.setAttribute('switch', '');
   input.style.display = 'none';
+  input.setAttribute('aria-hidden', 'true');
+  input.setAttribute('role', 'presentation');
   document.body.appendChild(input);
 
   label = document.createElement('label');
   label.htmlFor = INPUT_ID;
   label.style.display = 'none';
+  label.setAttribute('aria-hidden', 'true');
+  label.setAttribute('role', 'presentation');
   document.body.appendChild(label);
 
   initialized = true;
