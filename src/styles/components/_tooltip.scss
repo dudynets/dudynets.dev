@@ -65,10 +65,6 @@
       visibility var(--transition-default);
   }
 
-  &[data-tooltip-fixed-width-px]::after {
-    width: attr(data-tooltip-fixed-width-px px, auto);
-  }
-
   @supports not (position-area: bottom) {
     position: relative;
 
