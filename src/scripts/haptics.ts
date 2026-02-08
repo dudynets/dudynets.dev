@@ -46,14 +46,11 @@ function init() {
 }
 
 function setListeners() {
-  const elements = Array.from(
-    document.querySelectorAll(HAPTICS_TRIGGER_SELECTOR),
-  );
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
 
-  elements.forEach((element) => {
-    if (!(element instanceof HTMLElement)) return;
-
-    element.addEventListener('click', performClickHaptics);
+    if (target.closest(HAPTICS_TRIGGER_SELECTOR)) performClickHaptics();
   });
 }
 
