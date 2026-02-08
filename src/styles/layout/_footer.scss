@@ -45,7 +45,9 @@ footer {
     gap: $gap;
 
     a {
-      $touch-target-offset: math.div($gap, 2);
+      // TODO: Revert to math.div($gap, 2) when the container has multiple links so touch targets don't overlap.
+      //       Set to 20px for accessibility in the single-link case.
+      $touch-target-offset: 20px;
 
       display: flex;
       align-items: center;
@@ -55,7 +57,7 @@ footer {
       transition: opacity var(--transition-default);
 
       &:focus-visible {
-        outline-offset: 0;
+        outline-offset: -$touch-target-offset + 4px;
         border-radius: calc($touch-target-offset + var(--radius-sm));
       }
 
