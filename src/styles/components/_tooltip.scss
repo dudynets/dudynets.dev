@@ -53,7 +53,7 @@
     color: var(--fg);
     font-size: var(--text-sm);
     text-align: center;
-    text-wrap: balance;
+    text-wrap: pretty;
 
     pointer-events: none;
     opacity: 0;
@@ -63,6 +63,10 @@
     transition:
       opacity var(--transition-default),
       visibility var(--transition-default);
+  }
+
+  &[data-tooltip-fixed-width-px]::after {
+    width: attr(data-tooltip-fixed-width-px px, auto);
   }
 
   @supports not (position-area: bottom) {
