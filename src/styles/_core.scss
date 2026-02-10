@@ -50,6 +50,10 @@ main {
   color: var(--bg);
 }
 
+picture {
+  display: contents;
+}
+
 img::selection {
   background: transparent;
 }

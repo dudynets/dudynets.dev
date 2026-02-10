@@ -45,18 +45,14 @@ header {
       border-radius: calc($touch-target-offset + var(--radius-sm));
     }
 
-    img,
-    picture {
+    img {
       width: 128px;
       height: auto;
+      transition: opacity var(--transition-default);
 
       @include utils.mobile {
         width: 112px;
       }
-    }
-
-    img {
-      transition: opacity var(--transition-default);
     }
 
     @include utils.hover {
