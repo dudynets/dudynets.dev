@@ -1,5 +1,5 @@
 <a href="https://dudynets.dev">
-  <img src="https://dudynets.dev/assets/brand/icon-rounded.png" alt="drawing" width="128"/>
+  <img src="https://dudynets.dev/assets/brand/icon-light-rounded.png" alt="drawing" width="128"/>
 </a>
 
 # Oleksandr Dudynets
