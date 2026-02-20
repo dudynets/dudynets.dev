@@ -2,7 +2,7 @@ import {onDOMLoaded} from './utils/on-dom-loaded';
 import {iOS, iPadOS} from './utils/platform-matchers';
 
 const INPUT_ID = '_haptics-input';
-const HAPTICS_TRIGGER_SELECTOR = 'a, [data-haptics="true"]';
+const HAPTICS_TRIGGER_SELECTOR = 'a, [data-tooltip], [data-haptics="true"]';
 
 let input: HTMLInputElement | null = null;
 let label: HTMLLabelElement | null = null;
@@ -21,14 +21,12 @@ function isSupported() {
 }
 
 function performClickHaptics() {
-  if (!isSupported()) return;
-
   if (!initialized) init();
   label?.click();
 }
 
 function init() {
-  if (!isSupported() || initialized) return;
+  if (initialized) return;
 
   input = document.createElement('input');
   input.type = 'checkbox';
@@ -59,6 +57,8 @@ function setListeners() {
 }
 
 onDOMLoaded(() => {
+  if (!isSupported()) return;
+
   init();
   setListeners();
 });
