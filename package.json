@@ -9,7 +9,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.24",
+    "autoprefixer": "^10.4.27",
     "prettier": "^3.8.1",
     "sass-embedded": "^1.97.3",
     "sharp": "^0.34.5",

@@ -58,10 +58,18 @@ img::selection {
   background: transparent;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@mixin _no-motion {
   *,
   *::before,
   *::after {
     transition-duration: 0s !important;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @include _no-motion;
+}
+
+html.supports-js.no-motion {
+  @include _no-motion;
 }
