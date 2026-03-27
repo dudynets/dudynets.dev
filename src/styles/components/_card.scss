@@ -14,12 +14,14 @@
   contain: content;
   transition:
     background-color var(--transition-default),
-    border-color var(--transition-default);
+    border-color var(--transition-default),
+    translate var(--transition-default);
 
   @include utils.hover {
     background-color: var(--surface-hover);
     border-color: var(--border-hover);
     border-radius: var(--radius-lg);
+    translate: 0 -2px;
 
     .card__arrow {
       opacity: 1;

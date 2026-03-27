@@ -11,8 +11,4 @@ section {
     margin-top: 0;
   }
 
-  &:not(:first-child) {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 400px;
-  }
 }
