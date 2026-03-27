@@ -11,6 +11,7 @@
   border-radius: var(--radius-lg);
   text-decoration: none;
   color: var(--fg);
+  contain: content;
   transition:
     background-color var(--transition-default),
     border-color var(--transition-default);

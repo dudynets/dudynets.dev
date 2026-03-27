@@ -1,19 +1,20 @@
 import type {Plugin} from 'vite';
 
-const LD_JSON_SCRIPT_REGEX =
-  /<script\s+type="application\/ld\+json"\s*>([\s\S]*?)<\/script>/gi;
+const JSON_SCRIPT_REGEX =
+  /<script\s+type="(application\/ld\+json|speculationrules)"\s*>([\s\S]*?)<\/script>/gi;
 
 /**
- * Minifies JSON inside <script type="application/ld+json"> tags.
+ * Minifies JSON inside <script type="application/ld+json"> and
+ * <script type="speculationrules"> tags.
  * Parses and re-serializes with no whitespace to reduce HTML size.
  */
-export function minifyLdJson(): Plugin {
+export function minifyInlineJson(): Plugin {
   return {
-    name: 'minify-ld-json',
+    name: 'minify-inline-json',
     enforce: 'pre',
 
     transformIndexHtml(html) {
-      return html.replace(LD_JSON_SCRIPT_REGEX, (_full, jsonContent) => {
+      return html.replace(JSON_SCRIPT_REGEX, (_full, type, jsonContent) => {
         const trimmed = jsonContent.trim();
         if (!trimmed) return _full;
 
@@ -21,7 +22,7 @@ export function minifyLdJson(): Plugin {
           const parsed = JSON.parse(trimmed);
           const minified = JSON.stringify(parsed);
 
-          return `<script type="application/ld+json">${minified}</script>`;
+          return `<script type="${type}">${minified}</script>`;
         } catch {
           return _full;
         }

@@ -1,4 +1,4 @@
-import {onDOMLoaded} from './utils/on-dom-loaded';
+import {onIdle} from './utils/on-idle';
 import {iOS, iPadOS} from './utils/platform-matchers';
 
 const INPUT_ID = '_haptics-input';
@@ -56,7 +56,7 @@ function setListeners() {
   });
 }
 
-onDOMLoaded(() => {
+onIdle(() => {
   if (!isSupported()) return;
 
   init();

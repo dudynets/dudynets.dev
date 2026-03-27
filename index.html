@@ -7,6 +7,13 @@
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="dns-prefetch" href="https://github.com" />
+    <link rel="dns-prefetch" href="https://linkedin.com" />
+    <link rel="dns-prefetch" href="https://t.me" />
+    <link rel="dns-prefetch" href="https://clovercollab.com" />
+    <link rel="dns-prefetch" href="https://get.lovecounter.pp.ua" />
 
     <link
       rel="preload"
@@ -22,6 +29,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta content="English" name="language" />
 
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link
       href="/assets/brand/icon-light-rounded.png?optimize=true&w=96&h=96"
       rel="icon"
@@ -35,6 +43,9 @@
     <meta name="theme-color" content="#0a0a0a" />
 
     <link rel="canonical" href="https://dudynets.dev" />
+    <link rel="me" href="https://github.com/dudynets" />
+    <link rel="me" href="https://linkedin.com/in/dudynets" />
+    <link rel="me" href="https://t.me/dudynets" />
     <meta content="https://dudynets.dev" property="og:url" />
     <meta content="website" property="og:type" />
     <meta content="en_US" property="og:locale" />
@@ -63,6 +74,7 @@
         "@graph": [
           {
             "@type": "Person",
+            "@id": "#person",
             "name": "Oleksandr Dudynets",
             "url": "https://dudynets.dev",
             "image": "https://dudynets.dev/assets/brand/og-image.png",
@@ -110,13 +122,49 @@
             }
           },
           {
+            "@type": "ProfilePage",
+            "mainEntity": {"@id": "#person"},
+            "dateCreated": "2024-01-01",
+            "dateModified": "2026-03-27"
+          },
+          {
             "@type": "WebSite",
             "name": "Oleksandr Dudynets",
             "url": "https://dudynets.dev",
             "description": "Angular & Ionic Developer",
             "inLanguage": "en",
-            "author": {"@type": "Person", "name": "Oleksandr Dudynets"},
-            "publisher": {"@type": "Person", "name": "Oleksandr Dudynets"}
+            "author": {"@id": "#person"},
+            "publisher": {"@id": "#person"}
+          },
+          {
+            "@type": "ItemList",
+            "name": "Mobile Apps",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                  "@type": "MobileApplication",
+                  "name": "Love Counter",
+                  "url": "https://get.lovecounter.pp.ua/",
+                  "applicationCategory": "Lifestyle",
+                  "operatingSystem": "iOS, Android",
+                  "description": "Track how long you've been together."
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "item": {
+                  "@type": "MobileApplication",
+                  "name": "Tea Hub",
+                  "url": "https://teahub.pp.ua/",
+                  "applicationCategory": "Food & Drink",
+                  "operatingSystem": "iOS, Android",
+                  "description": "Hundreds of tea recipes and a brewing timer."
+                }
+              }
+            ]
           }
         ]
       }
@@ -145,9 +193,23 @@
 
     <load src="/src/templates/footer.html" />
 
+    <script defer type="module" src="/src/scripts/build-info.ts"></script>
     <script defer type="module" src="/src/scripts/prevent-motion.ts"></script>
     <script defer type="module" src="/src/scripts/email-link.ts"></script>
     <script defer type="module" src="/src/scripts/haptics.ts"></script>
     <script defer type="module" src="/src/scripts/local-time.ts"></script>
+
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "where": {
+              "href_matches": "https://get.lovecounter.pp.ua/*"
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
   </body>
 </html>

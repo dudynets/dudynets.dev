@@ -1,4 +1,4 @@
-import {onDOMLoaded} from './utils/on-dom-loaded';
+import {onIdle} from './utils/on-idle';
 
 const TIMEZONE = 'Europe/Kyiv';
 const UPDATE_INTERVAL_MS = 1_000;
@@ -43,4 +43,4 @@ function init() {
   setInterval(update, UPDATE_INTERVAL_MS);
 }
 
-onDOMLoaded(() => init());
+onIdle(() => init());

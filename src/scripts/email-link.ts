@@ -1,7 +1,7 @@
 import {copyToClipboard} from './utils/copy';
 import {macintosh} from './utils/platform-matchers';
 import {isTouchDevice} from './utils/is-touch-device';
-import {onDOMLoaded} from './utils/on-dom-loaded';
+import {onIdle} from './utils/on-idle';
 import {setAbortableTimeout} from './utils/set-abortable-timeout';
 
 const DEFAULT_MODIFIER = 'Alt';
@@ -63,4 +63,4 @@ function initLink(link: HTMLElement) {
   });
 }
 
-onDOMLoaded(() => init());
+onIdle(() => init());
