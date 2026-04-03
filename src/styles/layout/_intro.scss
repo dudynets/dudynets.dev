@@ -1,3 +1,5 @@
+@use '../_utils';
+
 .intro {
   display: flex;
   flex-direction: column;
@@ -14,10 +16,38 @@
       width: var(--text-base);
       height: var(--text-base);
       border-radius: var(--radius-sm);
-      margin-right: 4px;
       vertical-align: middle;
       position: relative;
       top: -1px;
     }
+  }
+
+  .at-icon {
+    @include utils.icon(
+      'at',
+      var(--text-sm),
+      $size-modifier: 1.35,
+      $y-offset: 4px
+    );
+
+    margin-right: -2px;
+  }
+
+  .telegram-icon {
+    @include utils.icon(
+      'social/telegram',
+      var(--text-sm),
+      $size-modifier: 1.1,
+      $y-offset: 2px
+    );
+  }
+
+  .github-icon {
+    @include utils.icon(
+      'social/github',
+      var(--text-sm),
+      $size-modifier: 1.1,
+      $y-offset: 2px
+    );
   }
 }
